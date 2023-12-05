@@ -8,6 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include <stdlib.h>
 
 //==============================================================================
 SVCAudioProcessor::SVCAudioProcessor()
@@ -98,6 +99,20 @@ void SVCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     int init_size = 10 * sampleRate;
     rec_buffer.setSize(getTotalNumOutputChannels(), init_size, false, true);
     processing = false;
+    
+//    system("cd /Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork");
+//    system("svc -h");
+//    system("python3 /Users/bishopcrowley/Music/code_stuff/juceprojs/SVC/Source/svc.py");
+    // Get the current working directory
+    juce::File currentDirectory = juce::File::getCurrentWorkingDirectory();
+
+    // Print out the full path name
+//    juce::Logger::writeToLog("Current Working Directory: " + currentDirectory.getFullPathName());
+    juce::String current_path = juce::SystemStats::getEnvironmentVariable("PATH", "couldn't find");
+    juce::String new_path = current_path + ":" + "/Users/bishopcrowley/Library/Python/3.9/bin";
+    setenv("PATH", new_path.toRawUTF8(), 1);
+    
+    juce::Logger::outputDebugString("installed the things");
 }
 
 void SVCAudioProcessor::releaseResources()
@@ -191,7 +206,8 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
                }
     } else {
         if (processing) {
-            const char *file_path = "~/Music/svc_test.wav";
+            juce::String file_path_juce ="~/Music/svc_test.wav";
+            const char *file_path = file_path_juce.toUTF8();
             juce::FileOutputStream file = juce::FileOutputStream(juce::File(file_path), playhead_int);
             juce::WavAudioFormat wavFormat;
             auto writer = wavFormat.createWriterFor(&file,
@@ -203,6 +219,11 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
             
             writer->writeFromAudioSampleBuffer(rec_buffer, 0, rec_buffer.getNumSamples());
             writer->flush();
+            
+            juce::String model_path = "/Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork/models/jack1.pth";
+            juce::String config_path = "/Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork/notebooks/logs/44k/config.json";
+            juce::String command = "svc infer " + file_path_juce + " -m " + model_path + " -c " + config_path + " -d cpu -na";
+            system(command.toUTF8());
             
             processing = false;
             juce::Logger::outputDebugString(std::to_string(playhead_int / getSampleRate()));

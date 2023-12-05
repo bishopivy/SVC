@@ -4,6 +4,9 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               cppLanguageStandard="20">
   <MAINGROUP id="AKEuIo" name="SVC">
+    <GROUP id="{A1BC0475-011A-CFE6-EBCA-63311C87A188}" name="3.9">
+      <FILE id="gR8k7N" name="svc" compile="0" resource="1" file="../../../../Library/Python/3.9/bin/svc"/>
+    </GROUP>
     <GROUP id="{1FCA7AE8-FBD0-35DE-45E7-C2148C941659}" name="Source">
       <FILE id="Kvvsfq" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
@@ -31,10 +34,12 @@
   </MODULES>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="svc">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="SVC" defines="JUCE_DISPLAY_SPLASH_SCREEN=0"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="SVC" defines="JUCE_DISPLAY_SPLASH_SCREEN=0"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="SVC" defines="JUCE_DISPLAY_SPLASH_SCREEN=0"
+                       libraryPath="/Users/bishopcrowley/Library/Python/3.9/bin&#10;/Users/bishopcrowley/Library/Python/3.8/bin"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="SVC" defines="JUCE_DISPLAY_SPLASH_SCREEN=0"
+                       libraryPath="/Users/bishopcrowley/Library/Python/3.9/bin&#10;/Users/bishopcrowley/Library/Python/3.8/bin"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../juce/modules"/>
