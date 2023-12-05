@@ -32,8 +32,8 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="SVC"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="SVC"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="SVC" defines="JUCE_DISPLAY_SPLASH_SCREEN=0"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="SVC" defines="JUCE_DISPLAY_SPLASH_SCREEN=0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../juce/modules"/>

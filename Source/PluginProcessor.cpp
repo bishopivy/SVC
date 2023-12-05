@@ -150,12 +150,16 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
-    }
+//    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+//    {
+//        auto* channelData = buffer.getWritePointer (channel);
+//
+//        // ..do something to the data...
+//    }
+    bool transfer = apvts.getRawParameterValue("Transfer")->load();
+    
+    
+    
 }
 
 //==============================================================================
@@ -166,7 +170,8 @@ bool SVCAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* SVCAudioProcessor::createEditor()
 {
-    return new SVCAudioProcessorEditor (*this);
+//    return new SVCAudioProcessorEditor (*this);
+    return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -183,6 +188,12 @@ void SVCAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
     // whose contents will have been created by the getStateInformation() call.
 }
 
+juce::AudioProcessorValueTreeState::ParameterLayout SVCAudioProcessor::createParameterLayout() {
+    juce::AudioProcessorValueTreeState::ParameterLayout layout;
+    
+    layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("Transfer", 1), "Transfer", false));
+    return layout;
+}
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
