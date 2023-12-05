@@ -95,6 +95,9 @@ void SVCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    int init_size = 10 * sampleRate;
+    rec_buffer.setSize(getTotalNumOutputChannels(), init_size, false, true);
+    processing = false;
 }
 
 void SVCAudioProcessor::releaseResources()
@@ -156,10 +159,77 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
 //
 //        // ..do something to the data...
 //    }
+    // Get the current playhead position
+
+
     bool transfer = apvts.getRawParameterValue("Transfer")->load();
+    bool copying = false;
+    juce::int64 playheadTimeInSamples = 0;
+    int playhead_int = 0;
     
+    if (auto* playHead = getPlayHead())
+    {
+        juce::Optional<juce::int64> possible_time = playHead->getPosition()->getTimeInSamples();
+        if (possible_time.hasValue()) {
+            copying = true;
+            playheadTimeInSamples = *possible_time;
+            playhead_int = static_cast<int>(playheadTimeInSamples);
+        }
+    }
+           
+    if (transfer)
+    {
+        processing = true;
+        juce::Logger::outputDebugString(std::to_string(std::round(playhead_int / getSampleRate())));
+               if (playheadTimeInSamples + buffer.getNumSamples() >= rec_buffer.getNumSamples())
+                   {
+                       resizeBuffer(playhead_int);
+                   }
+               // Append incoming audio to the recording buffer
+               for (int channel = 0; channel < 2; channel++){
+                   rec_buffer.copyFrom(channel, playhead_int, buffer, channel, 0, buffer.getNumSamples());
+               }
+    } else {
+        if (processing) {
+            const char *file_path = "~/Music/svc_test.wav";
+            juce::FileOutputStream file = juce::FileOutputStream(juce::File(file_path), playhead_int);
+            juce::WavAudioFormat wavFormat;
+            auto writer = wavFormat.createWriterFor(&file,
+                                                    getSampleRate(),
+                                                    2, //channels
+                                                    16, //bit depth
+                                                    {}, //meta data
+                                                    0); //idk
+            
+            writer->writeFromAudioSampleBuffer(rec_buffer, 0, rec_buffer.getNumSamples());
+            writer->flush();
+            
+            processing = false;
+            juce::Logger::outputDebugString(std::to_string(playhead_int / getSampleRate()));
+            rec_buffer.clear();
+            juce::Logger::outputDebugString("cleared buffer");
+        }
+    }
+    if (!copying) {
+//        juce::Logger::outputDebugString("not copying");
+    }
     
+}
+void SVCAudioProcessor::resizeBuffer(int playhead_int)
+{
+    // Create a temporary buffer with the new size
+    juce::AudioBuffer<float> newBuffer(rec_buffer.getNumChannels(), 1.5 * playhead_int);
     
+    // Copy the existing data to the new buffer
+    //        newBuffer.copyFrom(rec_buffer, 0, 0, rec_buffer.getNumSamples());
+    for (int channel = 0; channel < 2; channel += 1) {
+        
+        newBuffer.copyFrom(channel, 0, rec_buffer, channel, 0, rec_buffer.getNumSamples());
+        
+        // Replace the existing buffer with the new one
+        rec_buffer = newBuffer;
+    }
+    juce::Logger::outputDebugString("resized");
 }
 
 //==============================================================================

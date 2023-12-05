@@ -58,8 +58,13 @@ public:
     
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     juce::AudioProcessorValueTreeState apvts {*this, nullptr, "Parameters", createParameterLayout()};
+    
+    juce::AudioBuffer<float> rec_buffer;
+    bool processing;
+//    juce::AudioBuffer<float> temp_buffer;
 
 private:
     //==============================================================================
+    void resizeBuffer(int playhead_int);
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SVCAudioProcessor)
 };

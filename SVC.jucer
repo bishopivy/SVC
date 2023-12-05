@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="OZdWUZ" name="SVC" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              cppLanguageStandard="20">
   <MAINGROUP id="AKEuIo" name="SVC">
     <GROUP id="{1FCA7AE8-FBD0-35DE-45E7-C2148C941659}" name="Source">
       <FILE id="Kvvsfq" name="PluginProcessor.cpp" compile="1" resource="0"
