@@ -9,6 +9,10 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include <stdlib.h>
+#include <iostream>
+#include <fstream>
+
+std::ofstream outputFile("/Users/bishopcrowley/Music/out.txt");
 
 //==============================================================================
 SVCAudioProcessor::SVCAudioProcessor()
@@ -96,9 +100,27 @@ void SVCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+//    std::ofstream outputFile("/Users/bishopcrowley/Music/out.txt");
+    // Get the current time point
+    auto currentTimePoint = std::chrono::system_clock::now();
+
+    // Convert the time point to a time_t object
+    std::time_t currentTime = std::chrono::system_clock::to_time_t(currentTimePoint);
+
+    // Convert the time_t object to a local time structure
+    std::tm* localTime = std::localtime(&currentTime);
+
+    // Format and print the local time
+    char timeString[100];  // Buffer to hold the formatted time string
+    std::strftime(timeString, sizeof(timeString), "%Y-%m-%d %H:%M:%S", localTime);
+    outputFile << timeString << std::endl;
+    outputFile << "bruh moment" << std::endl;
+//    outputFile.close();
     int init_size = 10 * sampleRate;
     rec_buffer.setSize(getTotalNumOutputChannels(), init_size, false, true);
     processing = false;
+    converted = false;
+    start_point = 0;
     
 //    system("cd /Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork");
 //    system("svc -h");
@@ -176,11 +198,11 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
 //    }
     // Get the current playhead position
 
-
     bool transfer = apvts.getRawParameterValue("Transfer")->load();
     bool copying = false;
     juce::int64 playheadTimeInSamples = 0;
     int playhead_int = 0;
+    
     
     if (auto* playHead = getPlayHead())
     {
@@ -191,23 +213,35 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
             playhead_int = static_cast<int>(playheadTimeInSamples);
         }
     }
+    double time_in_seconds = playhead_int / getSampleRate();
+    if (time_in_seconds - static_cast<float>(static_cast<int>(time_in_seconds)) < 0.01) {
+        juce::Logger::outputDebugString(std::to_string(static_cast<int>(time_in_seconds)));
+    }
            
     if (transfer)
     {
         processing = true;
-        juce::Logger::outputDebugString(std::to_string(std::round(playhead_int / getSampleRate())));
-               if (playheadTimeInSamples + buffer.getNumSamples() >= rec_buffer.getNumSamples())
-                   {
-                       resizeBuffer(playhead_int);
-                   }
-               // Append incoming audio to the recording buffer
-               for (int channel = 0; channel < 2; channel++){
-                   rec_buffer.copyFrom(channel, playhead_int, buffer, channel, 0, buffer.getNumSamples());
-               }
+//        juce::Logger::outputDebugString(std::to_string(std::round(playhead_int / getSampleRate())));
+       if (playheadTimeInSamples + buffer.getNumSamples() >= rec_buffer.getNumSamples())
+           {
+               resizeBuffer(playhead_int);
+           }
+       // Append incoming audio to the recording buffer
+       for (int channel = 0; channel < 2; channel++){
+           rec_buffer.copyFrom(channel, playhead_int, buffer, channel, 0, buffer.getNumSamples());
+       }
     } else {
+        juce::String file_name = "/Users/bishopcrowley/Music/svc_test";
+        juce::String file_path_juce = file_name + ".wav";
+        juce::String converted_path = file_name + ".out.wav";
         if (processing) {
-            juce::String file_path_juce ="~/Music/svc_test.wav";
             const char *file_path = file_path_juce.toUTF8();
+            juce::String rm_command = "rm " + file_path_juce;
+            system(rm_command.toUTF8());
+            juce::String rm_command2 = "rm " + converted_path;
+            system(rm_command2.toUTF8());
+            outputFile << "about to write" << std::endl;
+            
             juce::FileOutputStream file = juce::FileOutputStream(juce::File(file_path), playhead_int);
             juce::WavAudioFormat wavFormat;
             auto writer = wavFormat.createWriterFor(&file,
@@ -219,16 +253,41 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
             
             writer->writeFromAudioSampleBuffer(rec_buffer, 0, rec_buffer.getNumSamples());
             writer->flush();
+//            outputFile << "just wrote" << std::endl;
+            juce::Logger::outputDebugString("just wrote");
             
             juce::String model_path = "/Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork/models/jack1.pth";
             juce::String config_path = "/Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork/notebooks/logs/44k/config.json";
             juce::String command = "svc infer " + file_path_juce + " -m " + model_path + " -c " + config_path + " -d cpu -na";
             system(command.toUTF8());
+//            system("python3 /Users/bishopcrowley/Music/code_stuff/juceprojs/SVC/Source/svc.py");
+//            outputFile << "just converted" << std::endl;
+            juce::Logger::outputDebugString("just converted");
+//            outputFile << std::to_string(covert_res) << std::endl;
             
             processing = false;
+            converted = true;
             juce::Logger::outputDebugString(std::to_string(playhead_int / getSampleRate()));
             rec_buffer.clear();
             juce::Logger::outputDebugString("cleared buffer");
+        }
+        if (converted) {
+            if (juce::File(converted_path).exists()) {
+                juce::FileInputStream file = juce::FileInputStream(juce::File(converted_path));
+                juce::WavAudioFormat wavFormat;
+                
+                auto reader = wavFormat.createReaderFor(&file, false);
+
+                if (reader != nullptr && (playhead_int - reader->lengthInSamples) < reader->lengthInSamples && playhead_int > reader->lengthInSamples) {
+                    reader->read(&buffer, 0, buffer.getNumSamples(), playhead_int - reader->lengthInSamples, true, true);
+                    outputFile << "read file" << std::endl;
+                } else {
+                    outputFile << "file out of range" << std::endl;
+                }
+            } else {
+                outputFile << "file doesn't exist" << std::endl;
+            }
+           
         }
     }
     if (!copying) {

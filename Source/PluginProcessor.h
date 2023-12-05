@@ -61,6 +61,8 @@ public:
     
     juce::AudioBuffer<float> rec_buffer;
     bool processing;
+    bool converted;
+    int start_point;
 //    juce::AudioBuffer<float> temp_buffer;
 
 private:
