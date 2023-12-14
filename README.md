@@ -16,3 +16,32 @@ Note this works for Mac Only.
 
 ## Building 
 - open `SVC.jucer` using the Projucer app that comes with JUCE
+- In Projucer, click File->Save Project and Open in IDE...
+    - This should open XCode 
+- In XCode click Product->Scheme->Choose Scheme
+    - Select SVC - AU
+- In XCode click Product->Scheme->Edit Scheme
+    - Make Sure Build Configuration is set to `Debug`
+    - Under executable, click `Other`, then search for AudioPluginHost and select.
+- Run in XCode (Product->Run, command R).
+
+## Running 
+- Perform the steps in Building, which will open AudioPluginHost.
+- If you haven't done initialized AudioPluginHost before:
+    - Options->Edit the List of Avaliable Plugins.
+    - Click `Options...` in the bottom left corner, then `Scan for new or updated AudioUnit plug-ins`.
+    - Exit out of this menu.
+    - Options->Plug-in Menu Type->List Plugins by Manufacturer.
+    - File->Open...
+        - Select `example.filtergraph`.
+    - Double Click `AUAudioFilePlayer (AudioUnit)`.
+        - Drag the file you want to turn into Bishop's voice into the list of Audio Files.
+    - Save (command S)
+    - Stop the process in XCode and start again.
+- Test the plugin:
+    -  Double Click `AUAudioFilePlayer (AudioUnit)`. If its UI isn't already open 
+    - Double Click `SVC (AudioUnit)`. If its UI isn't already open 
+    - Check `Transfer` in the SVC plugin
+    - Play your audio file 
+    - uncheck `Transfer`
+    - Wait a few seconds to hear the converted version. 

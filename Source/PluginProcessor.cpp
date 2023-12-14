@@ -113,15 +113,13 @@ void SVCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     // Format and print the local time
     char timeString[100];  // Buffer to hold the formatted time string
     std::strftime(timeString, sizeof(timeString), "%Y-%m-%d %H:%M:%S", localTime);
-//    outputFile << timeString << std::endl;
-//    outputFile << "bruh moment" << std::endl;
-//    outputFile.close();
+
     int init_size = 10 * sampleRate;
     rec_buffer.setSize(getTotalNumOutputChannels(), init_size, false, true);
     processing = false;
     converted = false;
     start_point = 0;
-    
+
     juce::File currentDirectory = juce::File::getCurrentWorkingDirectory();
 
     juce::String current_path = juce::SystemStats::getEnvironmentVariable("PATH", "couldn't find");
