@@ -3,6 +3,10 @@
 Use the so-vits-svc singing audio vocal transformer in an audio recording software instead of using python notebooks. <br>
 Note this works for Mac Only.
 
+## Open Source Code 
+I made use of the [so-vits-svc](https://github.com/34j/so-vits-svc-fork.git) python model.<br>
+The code I wrote is essentially as c++ wrapper application around the so-vits-svc model that allows it to be run as audio plug-in.
+
 ## Required Installations
 - [JUCE](https://juce.com/download/)
 - [XCode](https://apps.apple.com/us/app/xcode/id497799835?mt=12)
