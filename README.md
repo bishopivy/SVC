@@ -51,7 +51,8 @@ Note this works for Mac Only.
 ### Using microphone 
 - Wear headphones to avoid feedback loop.
 - File->Open->`example2.filtergraph`
-- If using microphone for the first time: Options->Change the Audio Device Settings.
+- If using microphone for the first time: 
+    - Options->Change the Audio Device Settings.
     - Set `Input` to Microphone.
     - Set `Output` to Externel Headphones.
     - Stop in XCode then run again. 

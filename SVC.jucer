@@ -5,7 +5,8 @@
               cppLanguageStandard="20">
   <MAINGROUP id="AKEuIo" name="SVC">
     <GROUP id="{A1BC0475-011A-CFE6-EBCA-63311C87A188}" name="3.9">
-      <FILE id="gR8k7N" name="svc" compile="0" resource="1" file="../../../../Library/Python/3.9/bin/svc"/>
+      <FILE id="gR8k7N" name="svc" compile="0" resource="1" file="../../../../Library/Python/3.9/bin/svc"
+            xcodeResource="1"/>
     </GROUP>
     <GROUP id="{1FCA7AE8-FBD0-35DE-45E7-C2148C941659}" name="Source">
       <FILE id="Kvvsfq" name="PluginProcessor.cpp" compile="1" resource="0"

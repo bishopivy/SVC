@@ -122,14 +122,9 @@ void SVCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     converted = false;
     start_point = 0;
     
-//    system("cd /Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork");
-//    system("svc -h");
-//    system("python3 /Users/bishopcrowley/Music/code_stuff/juceprojs/SVC/Source/svc.py");
-    // Get the current working directory
     juce::File currentDirectory = juce::File::getCurrentWorkingDirectory();
 
-    // Print out the full path name
-//    juce::Logger::writeToLog("Current Working Directory: " + currentDirectory.getFullPathName());
+    system("chmod +x ~/Library/Python/3.9/bin/svc");
     juce::String current_path = juce::SystemStats::getEnvironmentVariable("PATH", "couldn't find");
     juce::String new_path = current_path + ":" + "~/Library/Python/3.9/bin";
     setenv("PATH", new_path.toRawUTF8(), 1);
@@ -188,13 +183,6 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
-//    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-//    {
-//        auto* channelData = buffer.getWritePointer (channel);
-//
-//        // ..do something to the data...
-//    }
-    // Get the current playhead position
 
     bool transfer = apvts.getRawParameterValue("Transfer")->load();
     bool match_pitch = apvts.getRawParameterValue("Match Pitch")->load();
@@ -220,7 +208,6 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
     if (transfer)
     {
         processing = true;
-//        juce::Logger::outputDebugString(std::to_string(std::round(playhead_int / getSampleRate())));
        if (playheadTimeInSamples + buffer.getNumSamples() >= rec_buffer.getNumSamples())
            {
                resizeBuffer(playhead_int);
@@ -239,7 +226,6 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
             system(rm_command.toUTF8());
             juce::String rm_command2 = "rm " + converted_path;
             system(rm_command2.toUTF8());
-//            outputFile << "about to write" << std::endl;
             
             juce::FileOutputStream file = juce::FileOutputStream(juce::File(file_path), playhead_int);
             juce::WavAudioFormat wavFormat;
@@ -252,8 +238,6 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
             
             writer->writeFromAudioSampleBuffer(rec_buffer, 0, rec_buffer.getNumSamples());
             writer->flush();
-//            outputFile << "just wrote" << std::endl;
-            juce::Logger::outputDebugString("just wrote");
             
             juce::String model_path = "~/Music/code_stuff/so-vits-svc-fork/models/bishop2.pth";
             juce::String config_path = "~/Music/code_stuff/so-vits-svc-fork/notebooks/logs/44k/config.json";
@@ -262,10 +246,7 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
                 command += " -na";
             }
             system(command.toUTF8());
-//            system("python3 /Users/bishopcrowley/Music/code_stuff/juceprojs/SVC/Source/svc.py");
-//            outputFile << "just converted" << std::endl;
             juce::Logger::outputDebugString("just converted");
-//            outputFile << std::to_string(covert_res) << std::endl;
             
             processing = false;
             converted = true;
