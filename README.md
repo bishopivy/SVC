@@ -10,12 +10,12 @@ Note this works for Mac Only.
     - Note: so-vits-svc must be installed for python 3.9 in order to function in this plugin.
 
 ## File Setup 
-- create the directory `~/Music/code_stuff/so-vits-svc-fork/notebooks/logs/44k/` and move `config.json` there.
-- download the file `bishop2.pth` from Google Drive (download link sent to HAI instructors).
-- create the directory `~/Music/code_stuff/so-vits-svc-fork/models/` and move `bishop2.pth` there.
+- Create the directory `~/Music/code_stuff/so-vits-svc-fork/notebooks/logs/44k/` and move `config.json` there.
+- Download the file `bishop2.pth` from Google Drive (download link sent to HAI instructors).
+- Create the directory `~/Music/code_stuff/so-vits-svc-fork/models/` and move `bishop2.pth` there.
 
 ## Building 
-- open `SVC.jucer` using the Projucer app that comes with JUCE
+- Open `SVC.jucer` using the Projucer app that comes with JUCE
 - In Projucer, click File->Save Project and Open in IDE...
     - This should open XCode 
 - In XCode click Product->Scheme->Choose Scheme
