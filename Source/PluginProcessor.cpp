@@ -122,14 +122,8 @@ void SVCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     converted = false;
     start_point = 0;
     
-//    system("cd /Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork");
-//    system("svc -h");
-//    system("python3 /Users/bishopcrowley/Music/code_stuff/juceprojs/SVC/Source/svc.py");
-    // Get the current working directory
     juce::File currentDirectory = juce::File::getCurrentWorkingDirectory();
 
-    // Print out the full path name
-//    juce::Logger::writeToLog("Current Working Directory: " + currentDirectory.getFullPathName());
     juce::String current_path = juce::SystemStats::getEnvironmentVariable("PATH", "couldn't find");
     juce::String new_path = current_path + ":" + "~/Library/Python/3.9/bin";
     setenv("PATH", new_path.toRawUTF8(), 1);
