@@ -12,7 +12,7 @@
 #include <iostream>
 #include <fstream>
 
-std::ofstream outputFile("/Users/bishopcrowley/Music/out.txt");
+//std::ofstream outputFile("/Users/bishopcrowley/Music/out.txt");
 
 //==============================================================================
 SVCAudioProcessor::SVCAudioProcessor()
@@ -113,8 +113,8 @@ void SVCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     // Format and print the local time
     char timeString[100];  // Buffer to hold the formatted time string
     std::strftime(timeString, sizeof(timeString), "%Y-%m-%d %H:%M:%S", localTime);
-    outputFile << timeString << std::endl;
-    outputFile << "bruh moment" << std::endl;
+//    outputFile << timeString << std::endl;
+//    outputFile << "bruh moment" << std::endl;
 //    outputFile.close();
     int init_size = 10 * sampleRate;
     rec_buffer.setSize(getTotalNumOutputChannels(), init_size, false, true);
@@ -131,10 +131,8 @@ void SVCAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     // Print out the full path name
 //    juce::Logger::writeToLog("Current Working Directory: " + currentDirectory.getFullPathName());
     juce::String current_path = juce::SystemStats::getEnvironmentVariable("PATH", "couldn't find");
-    juce::String new_path = current_path + ":" + "/Users/bishopcrowley/Library/Python/3.9/bin";
+    juce::String new_path = current_path + ":" + "~/Library/Python/3.9/bin";
     setenv("PATH", new_path.toRawUTF8(), 1);
-    
-    juce::Logger::outputDebugString("installed the things");
 }
 
 void SVCAudioProcessor::releaseResources()
@@ -199,6 +197,7 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
     // Get the current playhead position
 
     bool transfer = apvts.getRawParameterValue("Transfer")->load();
+    bool match_pitch = apvts.getRawParameterValue("Match Pitch")->load();
     bool copying = false;
     juce::int64 playheadTimeInSamples = 0;
     int playhead_int = 0;
@@ -231,7 +230,7 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
            rec_buffer.copyFrom(channel, playhead_int, buffer, channel, 0, buffer.getNumSamples());
        }
     } else {
-        juce::String file_name = "/Users/bishopcrowley/Music/svc_test";
+        juce::String file_name = "~/Music/svc_test";
         juce::String file_path_juce = file_name + ".wav";
         juce::String converted_path = file_name + ".out.wav";
         if (processing) {
@@ -240,7 +239,7 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
             system(rm_command.toUTF8());
             juce::String rm_command2 = "rm " + converted_path;
             system(rm_command2.toUTF8());
-            outputFile << "about to write" << std::endl;
+//            outputFile << "about to write" << std::endl;
             
             juce::FileOutputStream file = juce::FileOutputStream(juce::File(file_path), playhead_int);
             juce::WavAudioFormat wavFormat;
@@ -256,9 +255,12 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
 //            outputFile << "just wrote" << std::endl;
             juce::Logger::outputDebugString("just wrote");
             
-            juce::String model_path = "/Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork/models/jack1.pth";
-            juce::String config_path = "/Users/bishopcrowley/Music/code_stuff/so-vits-svc-fork/notebooks/logs/44k/config.json";
-            juce::String command = "svc infer " + file_path_juce + " -m " + model_path + " -c " + config_path + " -d cpu -na";
+            juce::String model_path = "~/Music/code_stuff/so-vits-svc-fork/models/bishop2.pth";
+            juce::String config_path = "~/Music/code_stuff/so-vits-svc-fork/notebooks/logs/44k/config.json";
+            juce::String command = "svc infer " + file_path_juce + " -m " + model_path + " -c " + config_path + " -d cpu";
+            if (match_pitch) {
+                command += " -na";
+            }
             system(command.toUTF8());
 //            system("python3 /Users/bishopcrowley/Music/code_stuff/juceprojs/SVC/Source/svc.py");
 //            outputFile << "just converted" << std::endl;
@@ -280,12 +282,12 @@ void SVCAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
 
                 if (reader != nullptr && (playhead_int - reader->lengthInSamples) < reader->lengthInSamples && playhead_int > reader->lengthInSamples) {
                     reader->read(&buffer, 0, buffer.getNumSamples(), playhead_int - reader->lengthInSamples, true, true);
-                    outputFile << "read file" << std::endl;
+//                    outputFile << "read file" << std::endl;
                 } else {
-                    outputFile << "file out of range" << std::endl;
+//                    outputFile << "file out of range" << std::endl;
                 }
             } else {
-                outputFile << "file doesn't exist" << std::endl;
+//                outputFile << "file doesn't exist" << std::endl;
             }
            
         }
@@ -320,8 +322,8 @@ bool SVCAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* SVCAudioProcessor::createEditor()
 {
-//    return new SVCAudioProcessorEditor (*this);
-    return new juce::GenericAudioProcessorEditor(*this);
+    return new SVCAudioProcessorEditor (*this);
+//    return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -342,6 +344,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout SVCAudioProcessor::createPar
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     
     layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("Transfer", 1), "Transfer", false));
+    layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID("Match Pitch", 1), "Match Pitch", true));
     return layout;
 }
 //==============================================================================
