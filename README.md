@@ -37,13 +37,26 @@ Note this works for Mac Only.
 - Double Click `AUAudioFilePlayer (AudioUnit)`.
     - Drag the file you want to turn into Bishop's voice into the list of Audio Files.
 - Save (command S)
-- Stop the process in XCode and start again.<br>
+- Click Stop in XCode and run again.<br>
 
-## Running 
+## Running
+### Using an Audio File
 - Assuming Build and AudioPluginHost initialization have been performed.
--  Double Click `AUAudioFilePlayer (AudioUnit)`. If its UI isn't already open.
-- Double Click `SVC (AudioUnit)`. If its UI isn't already open.
+-  Double Click `AUAudioFilePlayer (AudioUnit)` if its UI isn't already open.
+- Double Click `SVC (AudioUnit)` if its UI isn't already open.
 - Check `Transfer` in the SVC plugin.
 - Play your audio file.
-- uncheck `Transfer`.
+- Uncheck `Transfer`.
 - Wait a few seconds to hear the converted version. 
+### Using microphone 
+- Wear headphones to avoid feedback loop.
+- File->Open->`example2.filtergraph`
+- If using microphone for the first time: Options->Change the Audio Device Settings.
+    - Set `Input` to Microphone.
+    - Set `Output` to Externel Headphones.
+    - Stop in XCode then run again. 
+- Double Click `SVC (AudioUnit)` if its UI isn't already open.
+- Check `Transfer` in the SVC plugin.
+- Sing some tunes.
+- Uncheck `Transfer`.
+- Wait a few seconds to hear the converted version.
