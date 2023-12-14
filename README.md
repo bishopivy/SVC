@@ -5,7 +5,7 @@ Note this works for Mac Only.
 
 ## Open Source Code 
 I made use of the [so-vits-svc](https://github.com/34j/so-vits-svc-fork.git) python model.<br>
-The code I wrote is essentially as c++ wrapper application around the so-vits-svc model that allows it to be run as audio plug-in. For the c++ code in `Source`, I started with a base JUCE file structure that was provided to me, and I implemented the functions. In other words, I was provided with a skeleton of empty functions and variable names, and I implemented them to work as my application.
+I wrote the code in the `Source` directory. The code I wrote is essentially as c++ wrapper application around the so-vits-svc model that allows it to be run as audio plug-in. For the c++ code in `Source`, I started with a base JUCE file structure that was provided to me as part of the JUCE pacakge, and I implemented the functions. In other words, I was provided with a skeleton of empty functions and variable names, and I implemented them to work as my application.
 
 ## Required Installations
 - [JUCE](https://juce.com/download/)
