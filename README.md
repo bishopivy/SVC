@@ -15,13 +15,13 @@ Note this works for Mac Only.
 - Create the directory `~/Music/code_stuff/so-vits-svc-fork/models/` and move `bishop2.pth` there.
 
 ## Building 
-- Open `SVC.jucer` using the Projucer app that comes with JUCE
+- Open `SVC.jucer` using the Projucer app that comes with JUCE.
 - In Projucer, click File->Save Project and Open in IDE...
-    - This should open XCode 
-- In XCode click Product->Scheme->Choose Scheme
-    - Select SVC - AU
-- In XCode click Product->Scheme->Edit Scheme
-    - Make Sure Build Configuration is set to `Debug`
+    - This should open XCode .
+- In XCode click Product->Scheme->Choose Scheme.
+    - Select SVC - AU.
+- In XCode click Product->Scheme->Edit Scheme.
+    - Make Sure Build Configuration is set to `Debug`.
     - Under executable, click `Other`, then search for AudioPluginHost and select.
 - Run in XCode (Product->Run, command R).
 
@@ -36,7 +36,7 @@ Note this works for Mac Only.
     - Select `example.filtergraph`.
 - Double Click `AUAudioFilePlayer (AudioUnit)`.
     - Drag the file you want to turn into Bishop's voice into the list of Audio Files.
-- Save (command S)
+- Save (command S).
 - Click Stop in XCode and run again.<br>
 
 ## Running
@@ -50,7 +50,7 @@ Note this works for Mac Only.
 - Wait a few seconds to hear the converted version. 
 ### Using microphone 
 - Wear headphones to avoid feedback loop.
-- File->Open->`example2.filtergraph`
+- File->Open->`example2.filtergraph`.
 - If using microphone for the first time: 
     - Options->Change the Audio Device Settings.
     - Set `Input` to Microphone.
