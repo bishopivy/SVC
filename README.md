@@ -25,9 +25,9 @@ Note this works for Mac Only.
     - Under executable, click `Other`, then search for AudioPluginHost and select.
 - Run in XCode (Product->Run, command R).
 
-## Running 
+## AudioPlugin Host initialization 
+- These steps only need to be performed once.
 - Perform the steps in Building, which will open AudioPluginHost.
-If you haven't done initialized AudioPluginHost before:
 - Options->Edit the List of Avaliable Plugins.
 - Click `Options...` in the bottom left corner, then `Scan for new or updated AudioUnit plug-ins`.
 - Exit out of this menu.
@@ -38,10 +38,12 @@ If you haven't done initialized AudioPluginHost before:
     - Drag the file you want to turn into Bishop's voice into the list of Audio Files.
 - Save (command S)
 - Stop the process in XCode and start again.<br>
-Test the plugin:
--  Double Click `AUAudioFilePlayer (AudioUnit)`. If its UI isn't already open 
-- Double Click `SVC (AudioUnit)`. If its UI isn't already open 
-- Check `Transfer` in the SVC plugin
-- Play your audio file 
-- uncheck `Transfer`
+
+## Running 
+- Assuming Build and AudioPluginHost initialization have been performed.
+-  Double Click `AUAudioFilePlayer (AudioUnit)`. If its UI isn't already open.
+- Double Click `SVC (AudioUnit)`. If its UI isn't already open.
+- Check `Transfer` in the SVC plugin.
+- Play your audio file.
+- uncheck `Transfer`.
 - Wait a few seconds to hear the converted version. 
